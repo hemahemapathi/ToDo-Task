@@ -14,7 +14,7 @@
        - npm or yarn
 
 4. Usage :
-        - Open [http://localhost:3000]( http://localhost:5174/) to view it in your browser.
+        - Open ( http://localhost:5174/) to view it in your browser.
         - Use the input fields to add a new task (task name, description). The status is set to 'not completed' by default.
         - Use the 'Edit' button on a task card to modify task details.
         - Use the 'Delete' button to remove a task.
