@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ToDo from './components/ToDo';
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 function App() {
   return (
     <div>

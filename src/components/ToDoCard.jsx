@@ -1,91 +1,61 @@
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
+import { Card, Button } from "react-bootstrap";
+import EditTodo from "./EditTodo";
 
-function ToDoCard({ toDo, setToDo, name, setName, desc, setDesc, button, setButton, toDoid,getId }) {
-  let handleDelete = (id) => {
-    let i = findIndex(id);
-    let dupTodo = [...toDo];
-    dupTodo.splice(i, 1);
-    setToDo(dupTodo);
+function ToDoCard({ toDo, setToDo, name, setName, desc, setDesc, button, setButton, toDoid, getId }) {
+  const [editingId, setEditingId] = useState(null);
+
+  const handleDelete = (id) => {
+    const updatedTodos = toDo.filter(item => item.id !== id);
+    setToDo(updatedTodos);
   };
-  let handleEdit = (id) => {
-    getId(id);
-    setButton(false)
-    let i = findIndex(id);
-    setName(toDo[i].name);
-    setDesc(toDo[i].desc);
+
+  const handleEdit = (id) => {
+    setEditingId(id);
   };
-  let handleStatusChange = (statusId, toDoId) => {
-    let i = findIndex(toDoId);
-    let dupTodo = [...toDo];
-    dupTodo[i].status = statusId;
-    setToDo(dupTodo);
-  }
-  let findIndex = (id) => {
-    let index;
-    for (let i = 0; i < toDo.length; i++) {
-      if (id === toDo[i].id) {
-        index = i;
-        break;
-      }
-    }
-    return index;
+
+  const handleSave = (editedTodo) => {
+    const updatedTodos = toDo.map(item =>
+       item.id === editedTodo.id ? editedTodo : item
+    );
+    setToDo(updatedTodos);
+    setEditingId(null);
   };
+
+  const handleCancel = () => {
+    setEditingId(null);
+  };
+
+  const handleStatusChange = (statusId, toDoId) => {
+    const updatedTodos = toDo.map(item =>
+       item.id === toDoId ? { ...item, status: statusId } : item
+    );
+    setToDo(updatedTodos);
+  };
+
   return (
-    <>
-      {toDo.map((e, i) => {
-        return (
-          <div key={i}>
-            <Card style={{ width: "20rem", backgroundColor: "#ccf5d3" }}>
-              <Card.Body>
-                <Card.Text>
-                  <div>
-                    <p>
-                      Name: <span>{e.name}</span>
-                    </p>
-                    <p>
-                      Description: <span>{e.desc}</span>
-                    </p>
-                  </div>
-                  <Form.Label className="d-flex justify-content-start align-items-center">
-                    Status: &nbsp; <b>{e.status}</b>
-                    <Form.Select
-                      style={{ width: "60%" }}
-                      aria-label="Default select example"
-                      defaultValue={e.status} onChange={(v) => { handleStatusChange(v.target.value,e.id) }}
-                    >
-                      <option value="1">Completed</option>
-                      <option value="2">Not Completed</option>
-                    </Form.Select>
-                  </Form.Label>
-                </Card.Text>
-                <div className="d-flex justify-content-end">
-                  <Button
-                    variant="success"
-                    onClick={() => {
-                      handleEdit(e.id);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  &nbsp;
-                  <Button
-                    variant="danger"
-                    onClick={() => {
-                      handleDelete(e.id);
-                    }}
-                  >
-                    Delete
-                  </Button>
+    <div className="todo-list">
+      {toDo.map((item) => (
+        <Card key={item.id} className="mb-7">
+          <Card.Body>
+            {editingId === item.id ? (
+              <EditTodo todo={item} onSave={handleSave} onCancel={handleCancel} />
+            ) : (
+              <>
+                <Card.Title>{item.name}</Card.Title>
+                <Card.Text>{item.desc}</Card.Text>
+                <Button variant="primary" onClick={() => handleEdit(item.id)}>Edit</Button>
+                <Button variant="danger" onClick={() => handleDelete(item.id)} className="ms-2">Delete</Button>
+                <div className="mt-2">
+                  <Button variant={item.status === 'not-completed' ? 'secondary' : 'outline-secondary'} onClick={() => handleStatusChange('not-completed', item.id)} className="me-2">Not Completed</Button>
+                  <Button variant={item.status === 'completed' ? 'success' : 'outline-success'} onClick={() => handleStatusChange('completed', item.id)}>Completed</Button>
                 </div>
-              </Card.Body>
-            </Card>
-          </div>
-        );
-      })}
-    </>
+              </>
+            )}
+          </Card.Body>
+        </Card>
+      ))}
+    </div>
   );
 }
 

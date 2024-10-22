@@ -3,6 +3,45 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import ToDoCard from "./ToDoCard";
 
+function EditTodo({ todo, onSave, onCancel }) {
+  const [editedName, setEditedName] = useState(todo.name);
+  const [editedDesc, setEditedDesc] = useState(todo.desc);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave({ ...todo, name: editedName, desc: editedDesc });
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Group className="mb-3">
+        <Form.Label>Task Name</Form.Label>
+        <Form.Control
+          type="text"
+          value={editedName}
+          onChange={(e) => setEditedName(e.target.value)}
+          required
+        />
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Description</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          value={editedDesc}
+          onChange={(e) => setEditedDesc(e.target.value)}
+        />
+      </Form.Group>
+      <Button variant="primary" type="submit">
+        Save Changes
+      </Button>
+      <Button variant="secondary" onClick={onCancel} className="ms-2">
+        Cancel
+      </Button>
+    </Form>
+  );
+}
+
 function ToDo() {
   let [buttonState, setButton] = useState(true);
   let [id, getId] = useState("");
@@ -102,7 +141,7 @@ function ToDo() {
   };
   return (
     <>
-      <h1 className="d-flex justify-content-center" style={{ color: "green" }}>
+      <h1 className="d-flex justify-content-center" >
         My ToDo
       </h1>
       <div className="d-flex justify-content-center">
@@ -113,14 +152,14 @@ function ToDo() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          &nbsp;
+           
           <Form.Control
             type="text"
             placeholder="Todo Description"
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
           />
-          &nbsp;
+           
           <Button
             variant="success"
             className="w-25"
@@ -134,10 +173,10 @@ function ToDo() {
       </div>
       <div>
         <div className="w-70 d-flex justify-content-around">
-          <b>My ToDo's</b>
-          <div className="w-40">
+          <b>My To Do's</b>
+          <div className="w-70 d-flex justify-content-around">
             <Form.Label className="d-flex justify-content-start align-items-center">
-              <b className="w-100">Status Filter: </b>&nbsp;
+              <b className="w-100">Status Filter: </b> 
               <Form.Select
                 aria-label="Default select example"
                 onChange={(e) => handleChange(e.target.value)}
